@@ -41,6 +41,7 @@
                         npkgs.node-gyp
                         npkgs.serve
                     ];
+                    # Try nativeBuildInputs?!
                     shellHook = ''
                       echo "Entering devShell";
                       export LD_LIBRARY_PATH=${pkgs.lib.strings.makeLibraryPath [ pkgs.openssl ]};
