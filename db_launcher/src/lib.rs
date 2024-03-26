@@ -5,6 +5,13 @@ use bollard::Docker;
 use futures_util::StreamExt;
 use std::collections::HashMap;
 
+pub fn port() -> u16 {
+    std::env::var("WORKSHOP_DB_PORT")
+        .unwrap_or_else(|_| "4725".to_string())
+        .parse()
+        .expect("Invalid PORT")
+}
+
 /// Launch a named Postgres 14 container.
 /// If a container with the same name already exists, do nothing.
 ///
@@ -16,6 +23,8 @@ pub async fn launch_postgres_container(
 ) -> Result<(), anyhow::Error> {
     println!("Downloading Postgres image.");
     let image = "postgres:14";
+    let port_tcp = format!("{}/tcp", port());
+    let port = format!("{}", port());
     let mut download_stream = cli.create_image(
         Some(bollard::image::CreateImageOptions {
             from_image: image,
@@ -37,7 +46,7 @@ pub async fn launch_postgres_container(
                 image: Some(image),
                 exposed_ports: Some({
                     let mut ports = HashMap::new();
-                    ports.insert("5432/tcp", HashMap::new());
+                    ports.insert(port_tcp.as_str(), HashMap::new());
                     ports
                 }),
                 host_config: Some(HostConfig {
@@ -45,9 +54,9 @@ pub async fn launch_postgres_container(
                         let mut m = PortMap::new();
                         let v = vec![PortBinding {
                             host_ip: None,
-                            host_port: Some("5432".to_string()),
+                            host_port: Some(port),
                         }];
-                        m.insert("5432/tcp".to_string(), Some(v));
+                        m.insert(port_tcp.clone(), Some(v));
                         m
                     }),
                     ..Default::default()
