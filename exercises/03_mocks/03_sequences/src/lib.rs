@@ -43,13 +43,25 @@ mod tests {
     use super::*;
     use googletest::expect_that;
     use googletest::matchers::{anything, eq, err, ok};
+    use mockall::Sequence;
 
     static MAX_N_RETRIES: usize = 3;
 
     #[googletest::test]
     fn it_retries_if_first_call_fails() {
         let mut mock_client = MockClient::new();
-        // TODO: setup mock_client to fail the first call and succeed the second
+        // We don't need a sequence here lol
+        let mut seq = Sequence::new();
+        mock_client
+            .expect_call()
+            .times(1)
+            .in_sequence(&mut seq)
+            .returning(|_| Err("error".into()));
+        mock_client
+            .expect_call()
+            .times(1)
+            .in_sequence(&mut seq)
+            .returning(|_| Ok(Response));
 
         let (outcome, n_retries) = with_retries(Request, mock_client, MAX_N_RETRIES);
 
@@ -60,8 +72,10 @@ mod tests {
     #[googletest::test]
     fn it_does_max_retries_if_all_calls_fail() {
         let mut mock_client = MockClient::new();
-        // TODO: setup mock_client to fail all calls
-
+        mock_client
+            .expect_call()
+            .times(..)
+            .returning(|_| Err("error".into()));
         let (outcome, n_retries) = with_retries(Request, mock_client, MAX_N_RETRIES);
 
         expect_that!(outcome, err(anything()));
