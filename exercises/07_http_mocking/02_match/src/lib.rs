@@ -1,10 +1,34 @@
-use wiremock::{Match, Request};
+use wiremock::{http::HeaderValue, Match, Request};
 
 struct WellFormedJson;
 
 impl Match for WellFormedJson {
     fn matches(&self, request: &Request) -> bool {
-        todo!("Implement me!")
+        /*
+        - The method is `POST`
+        - The `Content-Type` header is present and set to `application/json`
+        - The request body is a valid JSON object
+        - The `Content-Length` header is set and its value matches the length of the request body (in bytes)
+        */
+        let ok_method = request.method == "POST";
+        let ok_content_type = match request
+            .headers
+            .get("Content-Type")
+            .expect("Content-Type header is missing")
+            .to_str()
+        {
+            Ok(content_type) => content_type == "application/json",
+            Err(_) => false,
+        };
+        let content_length_hv: HeaderValue = request.headers.get("Content-Length").unwrap().clone();
+        let content_length_usize = content_length_hv
+            .to_str()
+            .unwrap()
+            .parse::<usize>()
+            .unwrap();
+        let ok_content_length = request.body.len() == content_length_usize;
+        let ok_body = serde_json::from_slice::<serde_json::Value>(&request.body).is_ok();
+        ok_method && ok_content_type && ok_content_length && ok_body
     }
 }
 
