@@ -21,6 +21,11 @@
         in {
             defaultPackage.x86_64-linux = pkgs.hello;
 
+            # OpenSSL Shell Hook
+            shellHook = ''
+              export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig";
+            '';
+
             devShell.x86_64-linux =
                 pkgs.mkShell {
                     buildInputs = [
@@ -29,6 +34,7 @@
                         pkgs.git
 
                         pkgs.httpie
+                        pkgs.openssl
                         pkgs.jq
                         pkgs.yq
                         pkgs.dig
