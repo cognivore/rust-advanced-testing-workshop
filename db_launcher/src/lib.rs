@@ -23,8 +23,10 @@ pub async fn launch_postgres_container(
 ) -> Result<(), anyhow::Error> {
     println!("Downloading Postgres image.");
     let image = "postgres:14";
-    let port_tcp = format!("{}/tcp", port());
-    let port = format!("{}", port());
+    let host_port_tcp = format!("{}/tcp", port());
+    let host_port = format!("{}", port());
+    let container_port = "5432";
+    let container_port_tcp = format!("{}/tcp", container_port);
     let mut download_stream = cli.create_image(
         Some(bollard::image::CreateImageOptions {
             from_image: image,
@@ -46,7 +48,7 @@ pub async fn launch_postgres_container(
                 image: Some(image),
                 exposed_ports: Some({
                     let mut ports = HashMap::new();
-                    ports.insert(port_tcp.as_str(), HashMap::new());
+                    ports.insert(host_port_tcp.as_str(), HashMap::new());
                     ports
                 }),
                 host_config: Some(HostConfig {
@@ -54,9 +56,9 @@ pub async fn launch_postgres_container(
                         let mut m = PortMap::new();
                         let v = vec![PortBinding {
                             host_ip: None,
-                            host_port: Some(port),
+                            host_port: Some(host_port),
                         }];
-                        m.insert(port_tcp.clone(), Some(v));
+                        m.insert(container_port_tcp.clone(), Some(v));
                         m
                     }),
                     ..Default::default()
