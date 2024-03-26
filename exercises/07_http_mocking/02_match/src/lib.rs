@@ -1,6 +1,29 @@
+use std::num::ParseIntError;
+
 use wiremock::{http::HeaderValue, Match, Request};
 
 struct WellFormedJson;
+
+// Function to extract and parse the Content-Length header
+fn get_content_length(request: &Request) -> Result<usize, ParseIntError> {
+    // Try to get the Content-Length header and convert it into a string
+    // The ? operator will automatically return early if the result is None or Err
+    let content_length_str = request
+        .headers
+        .get("Content-Length")
+        .ok_or_else(|| {
+            "Content-Length header missing"
+                .parse::<usize>()
+                .unwrap_err()
+        }) // Create a ParseIntError if header is missing
+        .and_then(|hv| {
+            hv.to_str()
+                .map_err(|_e| "Invalid header value".parse::<usize>().unwrap_err())
+        })?; // Convert HeaderValue to str, handle potential error
+
+    // Try to parse the string into a usize
+    content_length_str.parse::<usize>()
+}
 
 impl Match for WellFormedJson {
     fn matches(&self, request: &Request) -> bool {
@@ -11,24 +34,21 @@ impl Match for WellFormedJson {
         - The `Content-Length` header is set and its value matches the length of the request body (in bytes)
         */
         let ok_method = request.method == "POST";
-        let ok_content_type = match request
-            .headers
-            .get("Content-Type")
-            .expect("Content-Type header is missing")
-            .to_str()
-        {
-            Ok(content_type) => content_type == "application/json",
+        let ok_content_type = match request.headers.get("Content-Type") {
+            Some(content_type) => content_type.to_str().unwrap() == "application/json",
+            None => false,
+        };
+        let content_length_usize = get_content_length(request);
+        let ok_content_length = match content_length_usize {
+            Ok(content_length) => content_length == request.body.len(),
             Err(_) => false,
         };
-        let content_length_hv: HeaderValue = request.headers.get("Content-Length").unwrap().clone();
-        let content_length_usize = content_length_hv
-            .to_str()
-            .unwrap()
-            .parse::<usize>()
-            .unwrap();
-        let ok_content_length = request.body.len() == content_length_usize;
         let ok_body = serde_json::from_slice::<serde_json::Value>(&request.body).is_ok();
         ok_method && ok_content_type && ok_content_length && ok_body
+        /*
+
+
+        */
     }
 }
 
