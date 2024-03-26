@@ -37,7 +37,7 @@ NIX_CC='/nix/store/kvlhk0gpm2iz1asbw1xjac2ch0r8kyw9-gcc-wrapper-13.2.0'
 export NIX_CC
 NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu='1'
 export NIX_CC_WRAPPER_TARGET_HOST_x86_64_unknown_linux_gnu
-NIX_CFLAGS_COMPILE=' -frandom-seed=rhgzyw3y7x -isystem /nix/store/7wz6hm9i8wljz0hgwz1wqmn2zlbgavrq-python3-3.11.8/include -isystem /nix/store/yg75achq89wgqn2fi3gglgsd77kjpi03-openssl-3.0.13-dev/include -isystem /nix/store/8i4fdcf8g6c8wmav9kbyvrc6rbip55d6-jq-1.7.1-dev/include -isystem /nix/store/s01jxkf9lr2ajlqxk86065rs77mm96am-nodejs-18.19.1/include -isystem /nix/store/qfjng0sda5ily840viwwd8a0w57xzsq0-expect-5.45.4-dev/include -isystem /nix/store/gh24a2mm8881kwq91fbvs0rj8bssg833-tcl-8.6.13/include -isystem /nix/store/7wz6hm9i8wljz0hgwz1wqmn2zlbgavrq-python3-3.11.8/include -isystem /nix/store/yg75achq89wgqn2fi3gglgsd77kjpi03-openssl-3.0.13-dev/include -isystem /nix/store/8i4fdcf8g6c8wmav9kbyvrc6rbip55d6-jq-1.7.1-dev/include -isystem /nix/store/s01jxkf9lr2ajlqxk86065rs77mm96am-nodejs-18.19.1/include -isystem /nix/store/qfjng0sda5ily840viwwd8a0w57xzsq0-expect-5.45.4-dev/include -isystem /nix/store/gh24a2mm8881kwq91fbvs0rj8bssg833-tcl-8.6.13/include'
+NIX_CFLAGS_COMPILE=' -frandom-seed=601x1v2df3 -isystem /nix/store/7wz6hm9i8wljz0hgwz1wqmn2zlbgavrq-python3-3.11.8/include -isystem /nix/store/yg75achq89wgqn2fi3gglgsd77kjpi03-openssl-3.0.13-dev/include -isystem /nix/store/8i4fdcf8g6c8wmav9kbyvrc6rbip55d6-jq-1.7.1-dev/include -isystem /nix/store/s01jxkf9lr2ajlqxk86065rs77mm96am-nodejs-18.19.1/include -isystem /nix/store/qfjng0sda5ily840viwwd8a0w57xzsq0-expect-5.45.4-dev/include -isystem /nix/store/gh24a2mm8881kwq91fbvs0rj8bssg833-tcl-8.6.13/include -isystem /nix/store/7wz6hm9i8wljz0hgwz1wqmn2zlbgavrq-python3-3.11.8/include -isystem /nix/store/yg75achq89wgqn2fi3gglgsd77kjpi03-openssl-3.0.13-dev/include -isystem /nix/store/8i4fdcf8g6c8wmav9kbyvrc6rbip55d6-jq-1.7.1-dev/include -isystem /nix/store/s01jxkf9lr2ajlqxk86065rs77mm96am-nodejs-18.19.1/include -isystem /nix/store/qfjng0sda5ily840viwwd8a0w57xzsq0-expect-5.45.4-dev/include -isystem /nix/store/gh24a2mm8881kwq91fbvs0rj8bssg833-tcl-8.6.13/include'
 export NIX_CFLAGS_COMPILE
 NIX_ENFORCE_NO_NATIVE='1'
 export NIX_ENFORCE_NO_NATIVE
@@ -193,7 +193,10 @@ export propagatedNativeBuildInputs
 declare -a propagatedTargetDepFiles=('propagated-target-target-deps' )
 shell='/nix/store/5lr5n3qa4day8l1ivbwlcby2nknczqkq-bash-5.2p26/bin/bash'
 export shell
-shellHook=''
+shellHook='echo "Entering devShell";
+export LD_LIBRARY_PATH=/nix/store/7nmrrad8skxr47f9hfl3xc0pfqmwq51b-openssl-3.0.13/lib;
+export OPENSSL_DIR=/nix/store/gvad6v0cmq1qccmc4wphsazqbj0xzjsl-openssl-3.0.13-bin/lib;
+'
 export shellHook
 stdenv='/nix/store/c8dj731bkcdzhgrpawhc8qvdgls4xfjv-stdenv-linux'
 export stdenv

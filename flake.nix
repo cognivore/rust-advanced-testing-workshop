@@ -21,11 +21,6 @@
         in {
             defaultPackage.x86_64-linux = pkgs.hello;
 
-            # OpenSSL Shell Hook
-            shellHook = ''
-              export PKG_CONFIG_PATH="${pkgs.openssl.dev}/lib/pkgconfig";
-            '';
-
             devShell.x86_64-linux =
                 pkgs.mkShell {
                     buildInputs = [
@@ -46,6 +41,11 @@
                         npkgs.node-gyp
                         npkgs.serve
                     ];
+                    shellHook = ''
+                      echo "Entering devShell";
+                      export LD_LIBRARY_PATH=${pkgs.lib.strings.makeLibraryPath [ pkgs.openssl ]};
+                      export OPENSSL_DIR=${pkgs.openssl}/lib;
+                    '';
                 };
         };
 }
