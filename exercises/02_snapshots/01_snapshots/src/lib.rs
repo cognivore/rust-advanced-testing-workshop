@@ -5,6 +5,6 @@ mod tests {
     #[test]
     fn snapshot() {
         let m = "The new value I want to save";
-        assert_snapshot!(m, @"The old snapshot I want to compare against")
+        assert_snapshot!(m, @"The new value I want to save")
     }
 }
