@@ -44,7 +44,8 @@
                     shellHook = ''
                       echo "Entering devShell";
                       export LD_LIBRARY_PATH=${pkgs.lib.strings.makeLibraryPath [ pkgs.openssl ]};
-                      export OPENSSL_DIR=${pkgs.openssl}/lib;
+                      export OPENSSL_DIR=${pkgs.lib.getDev pkgs.openssl};
+                      export OPENSSL_LIB_DIR=${pkgs.lib.getLib pkgs.openssl}/lib;
                     '';
                 };
         };
