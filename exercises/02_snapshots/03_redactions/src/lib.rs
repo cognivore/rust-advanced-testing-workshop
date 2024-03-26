@@ -2,7 +2,13 @@
 mod tests {
     use insta::assert_json_snapshot;
     use serde_json::json;
-    use time::format_description::well_known::Iso8601;
+    use time::{format_description::well_known::Iso8601, Date};
+
+    /*
+    fn ttoa(x: &time::OffsetDateTime) -> String {
+        x.format(&Iso8601::DEFAULT).unwrap()
+    }
+    */
 
     #[test]
     fn snapshot() {
@@ -19,8 +25,14 @@ mod tests {
                 ]
             }
         });
+        /*
+        let unix_0 = time::OffsetDateTime::new_utc(
+            Date::from_calendar_date(1970, time::Month::January, 1).unwrap(),
+            time::Time::from_hms(0, 0, 0).unwrap(),
+        );
+        */
         assert_json_snapshot!(api_response, {
-            // TODO: Your redaction goes here!
+            ".created_at" => "[timestamp]" // Oops
         })
     }
 }
